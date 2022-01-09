@@ -14,7 +14,7 @@
 	},
 
 	"fileLogger": "$(AppData)\\Win3mu\\$(AppName).txt",
-	"consoleLogger": false,
+	"consoleLogger": true,
 	"logWarnings" : true,
 	"logExecutionFormat": "$(cputime,12) $(cs):$(ip): $(asm,-30)   $(annotations)",
 
@@ -28,16 +28,15 @@
 	{
 		"debug":
 		{
-			"consoleLogger": false,
+			"consoleLogger": true,
 			"enableDebugger": true,
 		},
-		"logMedium":
-		{
-			"consoleLogger": false,
-			"enableDebugger": false,
+		"logMedium": {
+			"consoleLogger": true,
+			"enableDebugger": true,
 			"logApiCalls": true,
 			"logMessages": true,
-			"logFileOperations": true,
+			"logFileOperations": true
 		},
 		"logVerbose":
 		{

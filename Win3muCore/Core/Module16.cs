@@ -79,7 +79,7 @@ namespace Win3muCore
 
         public override IEnumerable<ushort> GetExports()
         {
-            return _neFile.GetEntryPoints();    
+            return _neFile.GetEntryPoints();
         }
 
 
@@ -109,7 +109,7 @@ namespace Win3muCore
             var segments = _neFile.Segments;
             var neHeader = _neFile.Header;
 
-            for (int i=0; i<segments.Count; i++)
+            for (int i = 0; i < segments.Count; i++)
             {
                 var seg = segments[i];
 
@@ -122,7 +122,7 @@ namespace Win3muCore
                 // How much to allocate?
                 uint allocSize = seg.allocationBytes;
 
-                if ((ushort)(i+1) == neHeader.AutoDataSegIndex)
+                if ((ushort)(i + 1) == neHeader.AutoDataSegIndex)
                 {
                     name += " [Automatic Data Segment]";
                     allocSize += neHeader.InitHeapSize;
@@ -135,8 +135,8 @@ namespace Win3muCore
                 if (seg.globalHandle == 0)
                     throw new VirtualException("Out of Memory");
 
-                seg.globalHandle = machine.GlobalHeap.SetSelectorAttributes(seg.globalHandle, 
-                        !seg.flags.HasFlag(SegmentFlags.Data), 
+                seg.globalHandle = machine.GlobalHeap.SetSelectorAttributes(seg.globalHandle,
+                        !seg.flags.HasFlag(SegmentFlags.Data),
                         seg.flags.HasFlag(SegmentFlags.ReadOnly));
 
                 // Track the origin of the data for this segment
@@ -158,7 +158,7 @@ namespace Win3muCore
                 var segments = _neFile.Segments;
                 foreach (var seg in segments)
                 {
-                    if (seg.globalHandle!=0)
+                    if (seg.globalHandle != 0)
                     {
                         machine.GlobalHeap.Free(seg.globalHandle);
                         seg.globalHandle = 0;
@@ -221,21 +221,21 @@ namespace Win3muCore
         {
             switch (opCode)
             {
-                case 0xD89B: return 0x34CD; 
-                case 0xD99B: return 0x35CD; 
-                case 0xDA9B: return 0x36CD; 
-                case 0xDB9B: return 0x37CD; 
-                case 0xDC9B: return 0x38CD; 
-                case 0xDD9B: return 0x39CD; 
-                case 0xDE9B: return 0x3ACD; 
-                case 0xDF9B: return 0x3BCD; 
+                case 0xD89B: return 0x34CD;
+                case 0xD99B: return 0x35CD;
+                case 0xDA9B: return 0x36CD;
+                case 0xDB9B: return 0x37CD;
+                case 0xDC9B: return 0x38CD;
+                case 0xDD9B: return 0x39CD;
+                case 0xDE9B: return 0x3ACD;
+                case 0xDF9B: return 0x3BCD;
                 case 0x269B: return 0x3CCD;
-                case 0x2e9B: triByteTable = 0x2e;  return 0x3CCD;
-                case 0x369B: triByteTable = 0x36;  return 0x3CCD;
+                case 0x2e9B: triByteTable = 0x2e; return 0x3CCD;
+                case 0x369B: triByteTable = 0x36; return 0x3CCD;
                 case 0x9B90: return 0x3DCD;
             }
 
-            return 0;               
+            return 0;
         }
 
         public static byte MapFpOpCodeToWin87TriByte(byte triByteTable, byte opByte)
@@ -317,7 +317,7 @@ namespace Win3muCore
             for (int i = 0; i < segments.Count; i++)
             {
                 var seg = segments[i];
-                Log.WriteLine("    Linking segment: {0} selector: 0x{1:X4}", i+1, seg.globalHandle);
+                Log.WriteLine("    Linking segment: {0} selector: 0x{1:X4}", i + 1, seg.globalHandle);
 
                 // Get the segment data
                 var data = machine.GlobalHeap.GetBuffer(seg.globalHandle, false);
@@ -331,48 +331,48 @@ namespace Win3muCore
                     Log.WriteLine("        - reference to segment {0} found at 0x{1:X4}", segmentIndex, value);
                 };
 
-                for (int r=0; r<seg.relocations.Length; r++)
+                for (int r = 0; r < seg.relocations.Length; r++)
                 {
                     var reloc = seg.relocations[r];
 
                     if (machine.logRelocations)
                     {
-                        Log.WriteLine($"     relocation {r} {reloc.type} {reloc.offset:X4} p1: {reloc.param1:X4} {reloc.param2:X4}"); 
+                        Log.WriteLine($"     relocation {r} {reloc.type} {reloc.offset:X4} p1: {reloc.param1:X4} {reloc.param2:X4}");
                     }
 
-                    bool additive = (reloc.type & RelocationType.Additive)!= 0;
+                    bool additive = (reloc.type & RelocationType.Additive) != 0;
                     switch ((RelocationType)((byte)reloc.type & 0x03))
                     {
                         case RelocationType.InternalReference:
                             switch (reloc.addressType)
                             {
                                 case RelocationAddressType.Selector:
-                                {
-                                    // Work out the selector value
-                                    if (reloc.param1 == 0xFF)
                                     {
-                                        var ep = _neFile.GetEntryPoint(reloc.param2);
-                                        var targetSegment = segments[ep.segmentNumber - 1];
-                                        ApplyRelocations(data, reloc.offset, targetSegment.globalHandle, additive, machine.logRelocations);
-                                        refSelector(ep.segmentNumber, reloc.offset);
+                                        // Work out the selector value
+                                        if (reloc.param1 == 0xFF)
+                                        {
+                                            var ep = _neFile.GetEntryPoint(reloc.param2);
+                                            var targetSegment = segments[ep.segmentNumber - 1];
+                                            ApplyRelocations(data, reloc.offset, targetSegment.globalHandle, additive, machine.logRelocations);
+                                            refSelector(ep.segmentNumber, reloc.offset);
+                                        }
+                                        else
+                                        {
+                                            var targetSegment = segments[reloc.param1 - 1];
+                                            ApplyRelocations(data, reloc.offset, targetSegment.globalHandle, additive, machine.logRelocations);
+                                            refSelector(reloc.param1, reloc.offset);
+                                        }
+                                        break;
                                     }
-                                    else
-                                    {
-                                        var targetSegment = segments[reloc.param1 - 1];
-                                        ApplyRelocations(data, reloc.offset, targetSegment.globalHandle, additive, machine.logRelocations);
-                                        refSelector(reloc.param1, reloc.offset);
-                                    }
-                                    break;
-                                }
 
                                 case RelocationAddressType.Pointer32:
-                                {
+                                    {
                                         // Work out the selector value
                                         if (reloc.param1 == 0xFF)
                                         {
                                             // Get the entry point
                                             var ep = _neFile.GetEntryPoint(reloc.param2);
-                                            var ptr = (uint)(segments[ep.segmentNumber-1].globalHandle << 16 | ep.segmentOffset);
+                                            var ptr = (uint)(segments[ep.segmentNumber - 1].globalHandle << 16 | ep.segmentOffset);
                                             ApplyRelocations(data, reloc.offset, ptr, additive, machine.logRelocations);
                                             refSelector(ep.segmentNumber, reloc.offset);
                                         }
@@ -383,10 +383,10 @@ namespace Win3muCore
                                             refSelector(reloc.param1, reloc.offset);
                                         }
                                         break;
-                                }
+                                    }
 
                                 case RelocationAddressType.Offset16:
-                                {
+                                    {
                                         if (reloc.param1 == 0xFF)
                                         {
                                             var ep = _neFile.GetEntryPoint(reloc.param2);
@@ -397,7 +397,7 @@ namespace Win3muCore
                                             ApplyRelocations(data, reloc.offset, reloc.param2, additive, machine.logRelocations);
                                         }
                                         break;
-                                }
+                                    }
 
 
                                 default:
@@ -406,117 +406,126 @@ namespace Win3muCore
                             break;
 
                         case RelocationType.ImportedOrdinal:
-                        {
-                            // Get the module
-                            var moduleName = _neFile.ModuleReferenceTable[reloc.param1 - 1];
-                            var module = machine.ModuleManager.GetModule(moduleName);
-
-                            switch (reloc.addressType)
                             {
-                                case RelocationAddressType.Pointer32:
-                                {
-                                    // Get the proc address
-                                    uint farProc = module.GetProcAddress(reloc.param2);
-                                    if (farProc == 0)
-                                        throw new VirtualException("Module link failed, function ordinal #{0:X4} not found in module '{1}'", reloc.param2, moduleName);
+                                // Get the module
+                                var moduleName = _neFile.ModuleReferenceTable[reloc.param1 - 1];
+                                var module = machine.ModuleManager.GetModule(moduleName);
 
-                                    ApplyRelocations(data, reloc.offset, farProc, additive, machine.logRelocations);
-                                    break;
+                                switch (reloc.addressType)
+                                {
+                                    case RelocationAddressType.Pointer32:
+                                        {
+                                            // Get the proc address
+                                            uint farProc = module.GetProcAddress(reloc.param2);
+                                            if (farProc == 0)
+                                                throw new VirtualException("Module link failed, function ordinal #{0:X4} not found in module '{1}'", reloc.param2, moduleName);
+
+                                            ApplyRelocations(data, reloc.offset, farProc, additive, machine.logRelocations);
+                                            break;
+                                        }
+
+                                    case RelocationAddressType.Selector:
+                                        {
+                                            // Get the proc address
+                                            uint farProc = module.GetProcAddress(reloc.param2);
+                                            if (farProc == 0)
+                                                throw new VirtualException("Module link failed, function ordinal #{0:X4} not found in module '{1}'", reloc.param2, moduleName);
+
+                                            ApplyRelocations(data, reloc.offset, farProc.Hiword(), additive, machine.logRelocations);
+                                            break;
+                                        }
+
+                                    case RelocationAddressType.Offset16:
+                                        {
+                                            uint addr = module.GetProcAddress(reloc.param2);
+                                            if (addr == 0)
+                                                throw new VirtualException("Module link failed, function ordinal #{0:X4} not found in module '{1}'", reloc.param2, moduleName);
+
+                                            ApplyRelocations(data, reloc.offset, addr.Loword(), additive, machine.logRelocations);
+                                            break;
+                                        }
+                                    case RelocationAddressType.LowByte:
+                                        {
+                                            uint addr = module.GetProcAddress(reloc.param2);
+                                            if (addr == 0)
+                                                throw new VirtualException("Module link failed, function ordinal #{0:X4} not found in module '{1}'", reloc.param2, moduleName);
+                                            var b = addr.Lowbyte();
+                                            ApplyRelocations(data, reloc.offset, b, additive, machine.logRelocations);
+                                            break;
+                                        }
+
+                                    default:
+                                        throw new NotImplementedException(string.Format("Unsupported relocation type: {0}/{1}", reloc.type, reloc.addressType));
                                 }
 
-                                case RelocationAddressType.Selector:
-                                {
-                                    // Get the proc address
-                                    uint farProc = module.GetProcAddress(reloc.param2);
-                                    if (farProc == 0)
-                                        throw new VirtualException("Module link failed, function ordinal #{0:X4} not found in module '{1}'", reloc.param2, moduleName);
-
-                                    ApplyRelocations(data, reloc.offset, farProc.Hiword(), additive, machine.logRelocations);
-                                    break;
-                                }
-
-                                case RelocationAddressType.Offset16:
-                                {
-                                    uint addr = module.GetProcAddress(reloc.param2);
-                                    if (addr==0)
-                                         throw new VirtualException("Module link failed, function ordinal #{0:X4} not found in module '{1}'", reloc.param2, moduleName);
-
-                                    ApplyRelocations(data, reloc.offset, addr.Loword(), additive, machine.logRelocations);
-                                    break;
-                                }
-
-                                default:
-                                    throw new NotImplementedException(string.Format("Unsupported relocation type: {0}/{1}", reloc.type, reloc.addressType));
+                                break;
                             }
-
-                            break;
-                        }
 
                         case RelocationType.OSFixUp:
-                        {
-                            var fpOpCode = data.ReadWord(reloc.offset);
-                            var addend = reloc.getOsFixupAddend(true);
-                            ushort replace = (ushort)(fpOpCode + addend);
-                            data.WriteWord(reloc.offset, replace);
-
-                            var addend2 = reloc.getOsFixupAddend(false);
-                            if (addend2 != 0)
                             {
-                                var OpCode2 = data.ReadWord(reloc.offset+2);
-                                replace = (ushort)(OpCode2 + addend2);
-                                data.WriteWord(reloc.offset+2, replace);
+                                var fpOpCode = data.ReadWord(reloc.offset);
+                                var addend = reloc.getOsFixupAddend(true);
+                                ushort replace = (ushort)(fpOpCode + addend);
+                                data.WriteWord(reloc.offset, replace);
+
+                                var addend2 = reloc.getOsFixupAddend(false);
+                                if (addend2 != 0)
+                                {
+                                    var OpCode2 = data.ReadWord(reloc.offset + 2);
+                                    replace = (ushort)(OpCode2 + addend2);
+                                    data.WriteWord(reloc.offset + 2, replace);
+                                }
+
+                                //RecordOSFixup(i, reloc.offset, reloc.param1, reloc.param2, seg.offset + reloc.offset, fpOpCode, data.ReadWord(reloc.offset + 2));
+
+                                break;
                             }
-
-                            //RecordOSFixup(i, reloc.offset, reloc.param1, reloc.param2, seg.offset + reloc.offset, fpOpCode, data.ReadWord(reloc.offset + 2));
-
-                            break;
-                        }
 
                         case RelocationType.ImportedName:
-                        {
-                            var moduleName = _neFile.ModuleReferenceTable[reloc.param1 - 1];
-                            var module = machine.ModuleManager.GetModule(moduleName);
-                            var entryPointName = _neFile.GetImportedName(reloc.param2);
-                            var entryPointOrdinal = module.GetOrdinalFromName(entryPointName);
-                            switch (reloc.addressType)
                             {
-                                case RelocationAddressType.Pointer32:
-                                    {
-                                        // Get the proc address
-                                        uint farProc = module.GetProcAddress(entryPointOrdinal);
-                                        if (farProc == 0)
-                                            throw new VirtualException("Module link failed, function ordinal #{0:X4} not found in module '{1}'", reloc.param2, moduleName);
+                                var moduleName = _neFile.ModuleReferenceTable[reloc.param1 - 1];
+                                var module = machine.ModuleManager.GetModule(moduleName);
+                                var entryPointName = _neFile.GetImportedName(reloc.param2);
+                                var entryPointOrdinal = module.GetOrdinalFromName(entryPointName);
+                                switch (reloc.addressType)
+                                {
+                                    case RelocationAddressType.Pointer32:
+                                        {
+                                            // Get the proc address
+                                            uint farProc = module.GetProcAddress(entryPointOrdinal);
+                                            if (farProc == 0)
+                                                throw new VirtualException("Module link failed, function ordinal #{0:X4} not found in module '{1}'", reloc.param2, moduleName);
 
-                                        ApplyRelocations(data, reloc.offset, farProc, additive, machine.logRelocations);
-                                        break;
-                                    }
+                                            ApplyRelocations(data, reloc.offset, farProc, additive, machine.logRelocations);
+                                            break;
+                                        }
 
-                                case RelocationAddressType.Selector:
-                                    {
-                                        // Get the proc address
-                                        uint farProc = module.GetProcAddress(entryPointOrdinal);
-                                        if (farProc == 0)
-                                            throw new VirtualException("Module link failed, function ordinal #{0:X4} not found in module '{1}'", reloc.param2, moduleName);
+                                    case RelocationAddressType.Selector:
+                                        {
+                                            // Get the proc address
+                                            uint farProc = module.GetProcAddress(entryPointOrdinal);
+                                            if (farProc == 0)
+                                                throw new VirtualException("Module link failed, function ordinal #{0:X4} not found in module '{1}'", reloc.param2, moduleName);
 
-                                        ApplyRelocations(data, reloc.offset, farProc.Hiword(), additive, machine.logRelocations);
-                                        break;
-                                    }
+                                            ApplyRelocations(data, reloc.offset, farProc.Hiword(), additive, machine.logRelocations);
+                                            break;
+                                        }
 
-                                case RelocationAddressType.Offset16:
-                                    {
-                                        uint addr = module.GetProcAddress(entryPointOrdinal);
-                                        if (addr == 0)
-                                            throw new VirtualException("Module link failed, function ordinal #{0:X4} not found in module '{1}'", reloc.param2, moduleName);
+                                    case RelocationAddressType.Offset16:
+                                        {
+                                            uint addr = module.GetProcAddress(entryPointOrdinal);
+                                            if (addr == 0)
+                                                throw new VirtualException("Module link failed, function ordinal #{0:X4} not found in module '{1}'", reloc.param2, moduleName);
 
-                                        ApplyRelocations(data, reloc.offset, addr.Loword(), additive, machine.logRelocations);
-                                        break;
-                                    }
+                                            ApplyRelocations(data, reloc.offset, addr.Loword(), additive, machine.logRelocations);
+                                            break;
+                                        }
 
-                                default:
-                                    throw new NotImplementedException(string.Format("Unsupported relocation type: {0}/{1}", reloc.type, reloc.addressType));
+                                    default:
+                                        throw new NotImplementedException(string.Format("Unsupported relocation type: {0}/{1}", reloc.type, reloc.addressType));
+                                }
+                                break;
                             }
-                            break;
-                        }
 
                         default:
                             throw new NotImplementedException(string.Format("Unsupported relocation type: {0}", reloc.type));
@@ -524,13 +533,13 @@ namespace Win3muCore
                 }
             }
 
-            foreach (var ep in _neFile.GetAllEntryPoints().Where(x=>(x.flags & Win3muCore.NeFile.EntryPoint.FLAG_EXPORTED)!=0))
+            foreach (var ep in _neFile.GetAllEntryPoints().Where(x => (x.flags & Win3muCore.NeFile.EntryPoint.FLAG_EXPORTED) != 0))
             {
                 // Get the segment
                 var segment = segments[ep.segmentNumber - 1].globalHandle;
                 var data = machine.GlobalHeap.GetBuffer(segment, false);
 
-                if (data[ep.segmentOffset] != 0x1e || data[ep.segmentOffset+1] != 0x58 || data[ep.segmentOffset+2] !=0x90)
+                if (data[ep.segmentOffset] != 0x1e || data[ep.segmentOffset + 1] != 0x58 || data[ep.segmentOffset + 2] != 0x90)
                 {
                     /*
                     Log.Write("WARNING: Patching exported entry point prolog, existing code looks wrong at 0x{0:X4}:{1:X4}", ep.segmentNumber, ep.segmentOffset);
@@ -539,7 +548,7 @@ namespace Win3muCore
                         */
                 }
 
-                if ((ep.flags & Win3muCore.NeFile.EntryPoint.FLAG_SHAREDDS)!=0)
+                if ((ep.flags & Win3muCore.NeFile.EntryPoint.FLAG_SHAREDDS) != 0)
                 {
                     data[ep.segmentOffset] = 0xb8;      // MOV AX,xxxx
                     data.WriteWord(ep.segmentOffset + 1, this.DataSelector);
@@ -549,7 +558,7 @@ namespace Win3muCore
                     if (!this.IsDll)
                     {
                         data[ep.segmentOffset] = 0x90;        // NOP
-                        data[ep.segmentOffset+1] = 0x90;      // NOP
+                        data[ep.segmentOffset + 1] = 0x90;      // NOP
                     }
                 }
             }
@@ -563,7 +572,7 @@ namespace Win3muCore
 
             if (IsDll)
             {
-                if (_neFile.Header.EntryPoint!=0)
+                if (_neFile.Header.EntryPoint != 0)
                 {
                     var saveds = machine.ds;
 
@@ -584,7 +593,7 @@ namespace Win3muCore
                 }
             }
             else
-            {            
+            {
                 // Create the local heap
                 if (autoSeg != null)
                 {
@@ -653,7 +662,7 @@ namespace Win3muCore
             machine.ss = dataSeg.globalHandle;
             machine.ds = dataSeg.globalHandle;
             machine.ip = (ushort)(_neFile.Header.EntryPoint & 0xFFFF);
-            machine.cs = _neFile.Segments[(int)((_neFile.Header.EntryPoint>>16)-1)].globalHandle;
+            machine.cs = _neFile.Segments[(int)((_neFile.Header.EntryPoint >> 16) - 1)].globalHandle;
             machine.bx = _neFile.Header.InitStackSize;
             machine.cx = _neFile.Header.InitHeapSize;
             machine.di = hModule;
@@ -666,7 +675,7 @@ namespace Win3muCore
         public ushort InitTask(Machine machine)
         {
             var autoSeg = DataSegment;
-            if (autoSeg== null)
+            if (autoSeg == null)
                 return 0;
 
             // See https://blogs.msdn.microsoft.com/oldnewthing/20071203-00/?p=24323
@@ -675,7 +684,7 @@ namespace Win3muCore
             machine.cx = (ushort)(autoSeg == null ? 0 : autoSeg.allocationBytes);       // Stack limit
             machine.dx = (ushort)_nCmdShow;
             machine.di = hModule;
-            machine.bp = machine.sp;        
+            machine.bp = machine.sp;
             machine.ds = autoSeg.globalHandle;
 
             // Real imple seems to return with SP decremented by 2 and 0 on the stack

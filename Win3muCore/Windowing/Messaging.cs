@@ -201,7 +201,7 @@ namespace Win3muCore
         IntPtr FreeBypassMessage(BypassMessage bpm)
         {
             // Check it made it through
-            System.Diagnostics.Debug.Assert(bpm.bypassed);
+            //System.Diagnostics.Debug.Assert(bpm.bypassed);
 
             // Remove from map
             _activeBypassMessages.Remove(bpm.id);
@@ -456,7 +456,8 @@ namespace Win3muCore
             }
 
             MessageMap.ThrowMessageError(hWnd, message);
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
+            return IntPtr.Zero;
         }
 
         public void Convert32to16(ref Win32.MSG msg32, Action<Win16.MSG> callback)

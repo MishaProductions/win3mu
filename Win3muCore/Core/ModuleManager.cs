@@ -147,16 +147,16 @@ namespace Win3muCore
             nativeModule.SetGuestFileName(locatedModuleGuest.ToUpper());
 
             // Load it
-            try
-            {
+           // try
+            //{
                 LoadModule(nativeModule);
                 return nativeModule;
-            }
-            catch (VirtualException)
-            {
-                nativeModule.Unload(_machine);
-                throw;
-            }
+            //}
+            //catch (VirtualException)
+            //{
+             //   nativeModule.Unload(_machine);
+            //    throw;
+            //}
         }
 
         string _processPath;
@@ -225,8 +225,13 @@ namespace Win3muCore
 
             _loadDepth++;
 
-            try
+
+            if (_loadedModules.ContainsKey(module.GetModuleName()))
             {
+                return _loadedModules[module.GetModuleName()];
+            }
+            //try
+            //{
                 module.LoadCount++;
 
                 if (module.LoadCount==1)
@@ -234,8 +239,8 @@ namespace Win3muCore
                     System.Diagnostics.Debug.Assert(!_loadedModules.ContainsKey(module.GetModuleName()));
                     var referencedModules = new List<ModuleBase>();
 
-                    try
-                    {
+                    //try
+                    //{
                         // Add this module to map of loaded modules incase a dependent
                         // module circularly references back to it
                         _loadedModules.Add(module.GetModuleName(), module);
@@ -252,29 +257,29 @@ namespace Win3muCore
 
                         // Add to list of modules that still need to be linked
                         _pendingLink.Add(module);
-                    }
-                    catch (VirtualException)
-                    {
-                        // Unload referenced modules
-                        foreach (var m in referencedModules)
-                        {
-                            UnloadModule(m);
-                        }
+                    //}
+                    //catch (VirtualException)
+                    //{
+                    //    // Unload referenced modules
+                    //    foreach (var m in referencedModules)
+                    //    {
+                    //        UnloadModule(m);
+                    //    }
 
-                        // Remove this module
-                        _loadedModules.Remove(module.GetModuleName());
+                    //    // Remove this module
+                    //    _loadedModules.Remove(module.GetModuleName());
 
-                        throw;
-                    }
+                    //    throw;
+                    //}
                 }
-            }
-            catch (VirtualException)
-            {
-                _loadDepth--;
-                if (_loadDepth == 0)
-                    _pendingLink = null;
-                throw;
-            }
+            //}
+            //catch (VirtualException)
+            //{
+            //    _loadDepth--;
+            //    if (_loadDepth == 0)
+            //        _pendingLink = null;
+            //    throw;
+            //}
 
             _loadDepth--;
             if (_loadDepth==0)

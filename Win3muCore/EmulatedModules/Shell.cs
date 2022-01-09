@@ -29,6 +29,38 @@ namespace Win3muCore
     [Module("SHELL", @"C:\WINDOWS\SYSTEM\SHELL.DLL")]
     public class Shell : Module32
     {
-
+        //0021 - ABOUTDLGPROC - 0021
+        //0022 - EXTRACTICON - 0022
+        //0015 - FINDEXECUTABLE - 0015
+        //0009 - DRAGACCEPTFILES - 0009
+        [EntryPoint(0x009)]
+        public void DragAcceptFiles(HWND ptr, bool accept)
+        {
+            DragAcceptFiles(ptr.value, accept);
+        }
+        [DllImport("shell32.dll")]
+        private static extern void DragAcceptFiles(IntPtr hwnd, bool accept);
+        //0001 - REGOPENKEY - 0001
+        //0002 - REGCREATEKEY - 0002
+        //0064 - HERETHARBETYGARS - 0064
+        //0026 - FINDENVIRONMENTSTRING - 0026
+        //0004 - REGDELETEKEY - 0004
+        //0007 - REGENUMKEY - 0007
+        //0025 - DOENVIRONMENTSUBST - 0025
+        //0014 - SHELLEXECUTE - 0014
+        //0065 - FINDEXEDLGPROC - 0065
+        //000B - DRAGQUERYFILE - 000B
+        //000D - DRAGQUERYPOINT - 000D
+        //0005 - REGSETVALUE - 0005
+        //0027 - INTERNALEXTRACTICON - 0027
+        //0016 - SHELLABOUT - 0016
+        //0006 - REGQUERYVALUE - 0006
+        //0020 - WCI - 0020
+        //0066 - REGISTERSHELLHOOK - 0066
+        //0024 - EXTRACTASSOCIATEDICON - 0024
+        //000C - DRAGFINISH - 000C
+        //0067 - SHELLHOOKPROC - 0067
+        //0003 - REGCLOSEKEY - 0003
+        //0008 - WEP - 0008
     }
 }

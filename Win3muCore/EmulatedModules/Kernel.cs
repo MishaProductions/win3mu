@@ -420,6 +420,8 @@ namespace Win3muCore
 
             // Find the resource
             var resourceEntry = module.NeFile.FindResource(ridType.ToString(), ridName.ToString());
+            if (resourceEntry == null)
+                return 0;
 
             // hRsrc already allocated?
             ResourceInfo resInfo;
@@ -1008,6 +1010,13 @@ namespace Win3muCore
 
 
         // 0087 - GETSYSTEMDIRECTORY
+        [EntryPoint(0x0087)]
+        public nint GetSystemDirectory([Out][BufSize(+1)] StringBuilder sb, nint size)
+        {
+            sb.Append("C:\\WINDOWS\\SYSTEM");
+            return sb.Length;
+        }
+
 
         [EntryPoint(0x0088)]
         public ushort GetDriveType(short drive)
@@ -1028,6 +1037,12 @@ namespace Win3muCore
         // 0096 - DIRECTEDYIELD
         // 0097 - WINOLDAPCALL
         // 0098 - GETNUMTASKS
+        [EntryPoint(0x0098)]
+        public uint GetNumTasks()
+        {
+            //TODO
+            return 123;
+        }
         // 009A - GLOBALNOTIFY
         // 009B - GETTASKDS
         // 009C - LIMITEMSPAGES
@@ -1113,10 +1128,7 @@ namespace Win3muCore
             // Return the new selector
             return selDest.selector;
         }
-        
         // 00B2 - __WINFLAGS
-
-
         // 00B3 - __D000H
         // 00B4 - LONGPTRADD
         // 00B5 - __B000H
@@ -1131,6 +1143,11 @@ namespace Win3muCore
         // 00BE - __E000H
         // 00BF - GLOBALPAGELOCK
         // 00C0 - GLOBALPAGEUNLOCK
+        [EntryPoint(0x00C0)]
+        public nint GlobalPageUnlock()
+        {
+            return 0;
+        }
         // 00C1 - __0040H
         // 00C2 - __F000H
         // 00C3 - __C000H
@@ -1138,6 +1155,9 @@ namespace Win3muCore
         // 00C5 - GLOBALFIX
         // 00C6 - GLOBALUNFIX
         // 00C7 - SETHANDLECOUNT
+        [EntryPoint(0x00C7)]
+        [DllImport("kernel32.dll")]
+        public extern static uint SetHandleCount(uint num);
         // 00C8 - VALIDATEFREESPACES
         // 00C9 - REPLACEINST
         // 00CA - REGISTERPTRACE

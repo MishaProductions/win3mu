@@ -185,7 +185,7 @@ namespace Win3muCore
         [EntryPoint(0x001a)]
         public bool SetProp(HWND hWnd, StringOrId name, ushort handle)
         {
-            if (name.Name!= null)
+            if (name.Name != null)
             {
                 unsafe
                 {
@@ -238,7 +238,7 @@ namespace Win3muCore
 
         [EntryPoint(0x0024)]
         [DllImport("user32.dll")]
-        public static extern int GetWindowText(HWND hWnd, [BufSize(+1)] [Out] StringBuilder sb, nint cch);
+        public static extern int GetWindowText(HWND hWnd, [BufSize(+1)][Out] StringBuilder sb, nint cch);
 
         public static string GetWindowText(HWND hWnd)
         {
@@ -266,7 +266,7 @@ namespace Win3muCore
         public static bool EndPaint(HWND hWnd, [In] ref Win32.PAINTSTRUCT lpPaint)
         {
             var classStyle = _GetClassLong(hWnd, Win32.GCL_STYLE);
-            if ((classStyle & (Win32.CS_CLASSDC | Win32.CS_OWNDC | Win32.CS_PARENTDC))==0)
+            if ((classStyle & (Win32.CS_CLASSDC | Win32.CS_OWNDC | Win32.CS_PARENTDC)) == 0)
                 HDC.Map.Destroy32(lpPaint.hdc.value);
 
             return _EndPaint(hWnd, ref lpPaint);
@@ -386,7 +386,7 @@ namespace Win3muCore
 
             // Get the module
             var module = _machine.ModuleManager.GetModule(wc16.hInstance) as Module16;
-            if (module== null)
+            if (module == null)
             {
                 throw new InvalidOperationException();
             }
@@ -399,7 +399,7 @@ namespace Win3muCore
 
             // Register it
             ushort retv = RegisterClass(ref wc32);
-            if (retv!=0)
+            if (retv != 0)
             {
                 wndClass.Atom = retv;
                 WindowClass.Register(wndClass);
@@ -410,7 +410,7 @@ namespace Win3muCore
 
         [EntryPoint(0x003a)]
         [DllImport("user32.dll")]
-        public static extern int GetClassName(HWND hWnd, [BufSize(+1)] [Out] StringBuilder sb, nint cch);
+        public static extern int GetClassName(HWND hWnd, [BufSize(+1)][Out] StringBuilder sb, nint cch);
 
         public static string GetClassName(HWND hWnd)
         {
@@ -595,9 +595,9 @@ namespace Win3muCore
         [EntryPoint(0x005b)]
         [DllImport("user32.dll")]
         public static extern HWND GetDlgItem(HWND hWnd, nint id);
-        
+
         [EntryPoint(0x005c)]
-//        [DllImport("user32.dll")]
+        //        [DllImport("user32.dll")]
         public void SetDlgItemText(HWND hWnd, nint id, uint textOrHIcon)
         {
             HWND hWndChild = GetDlgItem(hWnd, id);
@@ -606,7 +606,7 @@ namespace Win3muCore
 
         [EntryPoint(0x005D)]
         [DllImport("user32.dll")]
-        public static extern int GetDlgItemText(HWND hWnd, nint id, [BufSize(+1)] [Out] StringBuilder sb, nint cch);
+        public static extern int GetDlgItemText(HWND hWnd, nint id, [BufSize(+1)][Out] StringBuilder sb, nint cch);
 
         [EntryPoint(0x005E)]
         [DllImport("user32.dll")]
@@ -641,7 +641,7 @@ namespace Win3muCore
         IEnumerable<string> DlgDirList(string spec, ushort uFileType)
         {
             // Do we actually need to enumerate folder?
-            if ((uFileType & Win16.DDL_ATTRIBUTE_MASK)!=0 || (uFileType & Win16.DDL_EXCLUSIVE)==0)
+            if ((uFileType & Win16.DDL_ATTRIBUTE_MASK) != 0 || (uFileType & Win16.DDL_EXCLUSIVE) == 0)
             {
                 // Yes, find files...
                 _machine.Dos.FindFiles(spec, (byte)(uFileType & Win16.DDL_ATTRIBUTE_MASK));
@@ -653,10 +653,10 @@ namespace Win3muCore
                         continue;
 
                     // Exclusive or attribute match?
-                    if ((ffs.attribute & uFileType & Win16.DDL_ATTRIBUTE_MASK)!=0 || 
-                        ((uFileType & Win16.DDL_EXCLUSIVE)==0 && (ffs.attribute & Win16.DDL_EXPLICIT_MASK) ==0))
+                    if ((ffs.attribute & uFileType & Win16.DDL_ATTRIBUTE_MASK) != 0 ||
+                        ((uFileType & Win16.DDL_EXCLUSIVE) == 0 && (ffs.attribute & Win16.DDL_EXPLICIT_MASK) == 0))
                     {
-                        if ((ffs.attribute & Win16.DDL_DIRECTORY)!=0)
+                        if ((ffs.attribute & Win16.DDL_DIRECTORY) != 0)
                             yield return $"[{ffs.name.ToLowerInvariant()}]";
                         else
                             yield return ffs.name.ToLowerInvariant();
@@ -725,7 +725,7 @@ namespace Win3muCore
                 }
 
                 // Write the spec back
-                if (lpszPath!=0)
+                if (lpszPath != 0)
                 {
                     _machine.WriteString(lpszPath, strSpec.ToUpperInvariant(), 0xFFFF);
                 }
@@ -745,7 +745,7 @@ namespace Win3muCore
                 }
 
                 // Directories and drives second
-                if ((uFileType & (Win16.DDL_DIRECTORY | Win16.DDL_DRIVES))!=0)
+                if ((uFileType & (Win16.DDL_DIRECTORY | Win16.DDL_DRIVES)) != 0)
                 {
                     foreach (var s in DlgDirList("*", (ushort)((uFileType & (Win16.DDL_DIRECTORY | Win16.DDL_DRIVES)) | Win16.DDL_EXCLUSIVE)))
                     {
@@ -779,7 +779,7 @@ namespace Win3muCore
             _didCallAdjustWindowRect = true;
             return _AdjustWindowRect(ref rc, style, bMenu);
         }
-         
+
         // 0067 - MAPDIALOGRECT
 
         [EntryPoint(0x0068)]
@@ -993,31 +993,31 @@ namespace Win3muCore
             switch (info.hookType)
             {
                 case Win32.WH_MSGFILTER:
-                {
-                    // Get the message
-                    var msg = Marshal.PtrToStructure<Win32.MSG>(lParam);
+                    {
+                        // Get the message
+                        var msg = Marshal.PtrToStructure<Win32.MSG>(lParam);
 
-                    // Convert it and call 16-bit hook proc
-                    IntPtr? retval = null;
-                    _machine.Messaging.Convert32to16(ref msg, (msg16) =>
-                    {
-                        var saveSP = _machine.sp;
-                        uint ptrMsg16 = _machine.StackAlloc(msg16);
-                        retval = BitUtils.DWordToIntPtr(_machine.CallHookProc16(info.hookProc16, (short)code, 0, ptrMsg16));
-                        _machine.sp = saveSP;
-                    });
+                        // Convert it and call 16-bit hook proc
+                        IntPtr? retval = null;
+                        _machine.Messaging.Convert32to16(ref msg, (msg16) =>
+                        {
+                            var saveSP = _machine.sp;
+                            uint ptrMsg16 = _machine.StackAlloc(msg16);
+                            retval = BitUtils.DWordToIntPtr(_machine.CallHookProc16(info.hookProc16, (short)code, 0, ptrMsg16));
+                            _machine.sp = saveSP;
+                        });
 
-                    if (retval.HasValue)
-                    {
-                        // Message was processed by hook, use it's return value
-                        return retval.Value;
+                        if (retval.HasValue)
+                        {
+                            // Message was processed by hook, use it's return value
+                            return retval.Value;
+                        }
+                        else
+                        {
+                            // Couldn't convert message so do default hook processing
+                            return CallNextHookEx(info.hhook, code, wParam, lParam);
+                        }
                     }
-                    else
-                    {
-                        // Couldn't convert message so do default hook processing
-                        return CallNextHookEx(info.hhook, code, wParam, lParam);
-                    }
-                }
             }
             throw new NotImplementedException("Hook Proxy");
         }
@@ -1116,7 +1116,8 @@ namespace Win3muCore
                 WindowClassKind.DetectSuperClasses(HWND.To32(hWnd), pfnProc32);
             }
 
-            return _machine.Messaging.CallWndProc32from16((hwnd32, message32, wParam32, lParam32) => {
+            return _machine.Messaging.CallWndProc32from16((hwnd32, message32, wParam32, lParam32) =>
+            {
 
                 return CallWindowProc(pfnProc32, hwnd32, message32, wParam32, lParam32);
 
@@ -1138,7 +1139,7 @@ namespace Win3muCore
         [EntryPoint(0x007d)]
         public void InvalidateRect(HWND hWnd, uint prc, bool eraseBackground)
         {
-            if (prc==0)
+            if (prc == 0)
             {
                 InvalidateRect(hWnd.value, IntPtr.Zero, eraseBackground);
             }
@@ -1236,7 +1237,7 @@ namespace Win3muCore
                 case Win16.GCW_HBRBACKGROUND:
                     return HGDIOBJ.To16(GetClassLongPtr(hWnd.value, index));
             }
-                                                                   
+
             throw new NotImplementedException();
         }
 
@@ -1275,10 +1276,10 @@ namespace Win3muCore
                     return _GetClassLong(hWnd, index);
 
                 case Win16.GCL_WNDPROC:
-                {
-                    var oldWndProc = GetClassLongPtr(hWnd.value, Win32.GCL_WNDPROC);
-                    return _machine.Messaging.GetWndProc16(oldWndProc);
-                }
+                    {
+                        var oldWndProc = GetClassLongPtr(hWnd.value, Win32.GCL_WNDPROC);
+                        return _machine.Messaging.GetWndProc16(oldWndProc);
+                    }
             }
 
             throw new NotImplementedException();
@@ -1335,11 +1336,11 @@ namespace Win3muCore
             switch (nIndex)
             {
                 case Win16.GWW_HINSTANCE:
-                {
-                    var old = HWND.HInstanaceOfHWnd(hWnd.value);
-                    HWND.RegisterHWndToHInstance(hWnd.value, value);
-                    return old;
-                }
+                    {
+                        var old = HWND.HInstanaceOfHWnd(hWnd.value);
+                        HWND.RegisterHWndToHInstance(hWnd.value, value);
+                        return old;
+                    }
             }
 
             throw new NotImplementedException();
@@ -1367,7 +1368,7 @@ namespace Win3muCore
         [EntryPoint(0x0087)]
         public uint GetWindowLong(HWND hWnd, short gwl)
         {
-            if (gwl>=0)
+            if (gwl >= 0)
             {
                 return _GetWindowLong(hWnd, (int)gwl);
             }
@@ -1416,7 +1417,7 @@ namespace Win3muCore
         [EntryPoint(0x0088)]
         public uint SetWindowLong(HWND hWnd, short gwl, uint value)
         {
-            if (gwl>=0)
+            if (gwl >= 0)
             {
                 var retv = _SetWindowLong(hWnd.value, (int)gwl, value);
                 System.Diagnostics.Debug.Assert(_GetWindowLong(hWnd, (int)gwl) == value);
@@ -1430,11 +1431,11 @@ namespace Win3muCore
                     return _SetWindowLong(hWnd.value, (int)gwl, value);
 
                 case Win16.GWL_WNDPROC:
-                {
-                    var wndProc = _machine.Messaging.GetWndProc32(value, false);
-                    var oldWndProc = SetWindowLongPtr(hWnd.value, Win32.GWL_WNDPROC, wndProc);
-                    return _machine.Messaging.GetWndProc16(oldWndProc);
-                }
+                    {
+                        var wndProc = _machine.Messaging.GetWndProc32(value, false);
+                        var oldWndProc = SetWindowLongPtr(hWnd.value, Win32.GWL_WNDPROC, wndProc);
+                        return _machine.Messaging.GetWndProc16(oldWndProc);
+                    }
             }
 
             if (gwl < 0)
@@ -1446,6 +1447,9 @@ namespace Win3muCore
         }
 
         // 0089 - OPENCLIPBOARD
+        [DllImport("user32.dll")]
+        [EntryPoint(0x0089)]
+        public static extern bool OpenClipboard();
         // 008A - CLOSECLIPBOARD
         // 008B - EMPTYCLIPBOARD
         // 008C - GETCLIPBOARDOWNER
@@ -1539,7 +1543,7 @@ namespace Win3muCore
         // 00A1 - GETMENUSTRING
         [EntryPoint(0x00A1)]
         [DllImport("user32.dll")]
-        public static extern bool GetMenuString(HMENU hMenu, nuint id, [BufSize(+1)] [Out] StringBuilder sb, nint cch, nuint flag);
+        public static extern bool GetMenuString(HMENU hMenu, nuint id, [BufSize(+1)][Out] StringBuilder sb, nint cch, nuint flag);
 
 
         // 00A2 - HILITEMENUITEM
@@ -1726,7 +1730,7 @@ namespace Win3muCore
         public ushort LoadString(ushort hModule, ushort stringID, uint pszString, ushort cch)
         {
             // Find the resource entry
-            var hRsrc = _machine.Kernel.FindResource(hModule, 
+            var hRsrc = _machine.Kernel.FindResource(hModule,
                 new StringOrId((ushort)(stringID / 16 + 1)),
                 new StringOrId(Win16.ResourceType.RT_STRING.ToString())
                 );
@@ -1738,7 +1742,7 @@ namespace Win3muCore
             var buf = _machine.GlobalHeap.GetBuffer(hData, false);
 
             ushort p = 0;
-            for (ushort i=0; i<(ushort)(stringID & 0x0F); i++)
+            for (ushort i = 0; i < (ushort)(stringID & 0x0F); i++)
             {
                 p += (ushort)(1 + buf.ReadByte(p));
             }
@@ -1754,7 +1758,7 @@ namespace Win3muCore
 
         [DllImport("user32.dll")]
         unsafe static extern HACCEL CreateAcceleratorTable(Win32.ACCEL* pAccel, int cEntries);
-        
+
         [EntryPoint(0x00b1)]
         public HACCEL LoadAccelerators(ushort hModule, StringOrId name)
         {
@@ -1774,7 +1778,7 @@ namespace Win3muCore
 
             // Read and convert all
             var list = new List<Win32.ACCEL>();
-            for (int i=0; i< count; i++)
+            for (int i = 0; i < count; i++)
             {
                 var a16 = stream.ReadStruct<Win16.ACCEL>();
                 list.Add(Win32.ACCEL.To32(a16));
@@ -1817,13 +1821,13 @@ namespace Win3muCore
 
 
 
-        [DllImport("user32.dll", EntryPoint ="GetSystemMetrics")]
+        [DllImport("user32.dll", EntryPoint = "GetSystemMetrics")]
         public static extern nint _GetSystemMetrics(nint nIndex);
 
         [EntryPoint(0x00b3)]
         public nint GetSystemMetrics(nint nIndex)
         {
-            if (nIndex>=0 && nIndex<WinCommon.SystemMetricNames.Length)
+            if (nIndex >= 0 && nIndex < WinCommon.SystemMetricNames.Length)
             {
                 var name = WinCommon.SystemMetricNames[nIndex];
                 int value;
@@ -1832,7 +1836,7 @@ namespace Win3muCore
             }
             return _GetSystemMetrics(nIndex);
         }
-                                                           
+
         [DllImport("user32.dll", EntryPoint = "GetSysColor")]
         public static extern uint _GetSysColor(nint nIndex);
 
@@ -1849,7 +1853,7 @@ namespace Win3muCore
             return _GetSysColor(nIndex);
         }
 
-        [DllImport("user32.dll")]                                   
+        [DllImport("user32.dll")]
         public static extern IntPtr GetSysColorBrush(int nIndex);
 
 
@@ -1867,7 +1871,7 @@ namespace Win3muCore
         {
             return 0;
         }
-        
+
         // 00BE - GETUPDATERECT
 
         [EntryPoint(0x00BF)]
@@ -1904,7 +1908,7 @@ namespace Win3muCore
         {
             // Widen tab positions
             int[] tabPositions = new int[tabs];
-            for (int i=0; i<tabs; i++)
+            for (int i = 0; i < tabs; i++)
             {
                 tabPositions[i] = (short)_machine.ReadWord((uint)(ptabPositions + i * 2));
             }
@@ -1929,20 +1933,20 @@ namespace Win3muCore
         }
 
 
-            /*
-        [EntryPoint(0x00cd)]
-        public int WriteComm(nint nCid, uint pszString, nint cbString)
-        {
-            int offset;
-            var buf = _machine.GlobalHeap.GetBuffer(pszString, false, out offset);
-            if (buf == null)
-                return -1;
+        /*
+    [EntryPoint(0x00cd)]
+    public int WriteComm(nint nCid, uint pszString, nint cbString)
+    {
+        int offset;
+        var buf = _machine.GlobalHeap.GetBuffer(pszString, false, out offset);
+        if (buf == null)
+            return -1;
 
-            var str = Machine.AnsiEncoding.GetString(buf, offset, cbString);
+        var str = Machine.AnsiEncoding.GetString(buf, offset, cbString);
 
-            return 0;
-        }
-        */
+        return 0;
+    }
+    */
 
         // 00CE - TRANSMITCOMMCHAR
         // 00CF - CLOSECOMM
@@ -2051,7 +2055,7 @@ namespace Win3muCore
         [EntryPoint(0x00e8)]
         public bool SetWindowPos(HWND hWnd, HWND hWndInsertAfter, short X, short Y, short cx, short cy, nuint uFlags)
         {
-            if ((uFlags & Win32.SWP_NOSIZE)==0)
+            if ((uFlags & Win32.SWP_NOSIZE) == 0)
             {
                 AdjustWindowSize(_GetWindowLong(hWnd, Win32.GWL_STYLE), _GetWindowLong(hWnd, Win32.GWL_EXSTYLE), ref cx, ref cy);
             }
@@ -2194,6 +2198,12 @@ namespace Win3muCore
         // 00FF - DEFDRIVERPROC
         // 0100 - GETDRIVERINFO
         // 0101 - GETNEXTDRIVER
+        [EntryPoint(0x0101)]
+        public nint GetNextDriver(nint driver, uint flags)
+        {
+            //TODO
+            return 0;
+        }
         // 0102 - MAPWINDOWPOINTS
         // 0103 - BEGINDEFERWINDOWPOS
         // 0104 - DEFERWINDOWPOS
@@ -2236,13 +2246,13 @@ namespace Win3muCore
 
         [DllImport("kernel32.dll")]
         static extern uint GlobalGetAtomNameA(ushort nAtom, StringBuilder lpBuffer, int nSize);
-        
+
         // 010F - GLOBALGETATOMNAME
-        [EntryPoint(0x010F)]        
+        [EntryPoint(0x010F)]
         public ushort GlobalGetAtomName(ushort nAtom, uint lpString, nint nSize)
         {
             StringBuilder AtomName = new StringBuilder(nSize);
-            uint  Size2 = GlobalGetAtomNameA(nAtom, AtomName, nSize);
+            uint Size2 = GlobalGetAtomNameA(nAtom, AtomName, nSize);
             _machine.WriteString(lpString, AtomName.ToString(), (ushort)Size2);
             return (ushort)Size2;
         }
@@ -2337,7 +2347,7 @@ namespace Win3muCore
         [EntryPoint(0x0193)]
         public bool UnregisterClass(StringOrId name, ushort hInstance)
         {
-            if (name.Name!=null)
+            if (name.Name != null)
             {
                 if (!UnregisterClass(name.Name, IntPtr.Zero))
                     return false;
@@ -2357,11 +2367,11 @@ namespace Win3muCore
 
         [EntryPoint(0x0194)]
         public bool GetClassInfo(ushort hInstance, string className, out Win16.WNDCLASS wc)
-        {               
+        {
             WindowClass windowClass = WindowClass.Find(className);
             if (windowClass == null)
             {
-                if (hInstance==0)
+                if (hInstance == 0)
                 {
                     int size = Marshal.SizeOf<Win16.WNDCLASS>();
                     Win32.get_WNDCLASS wc32;
@@ -2376,7 +2386,7 @@ namespace Win3muCore
                     wc.style = (ushort)wc32.style;
                     wc.lpszClassName = _machine.StringHeap.GetString(Marshal.PtrToStringUni(wc32.lpszClassName));
 
-                    if (wc32.lpszMenuName.Hiword()!=0)
+                    if (wc32.lpszMenuName.Hiword() != 0)
                     {
                         wc.lpszMenuName = _machine.StringHeap.GetString(Marshal.PtrToStringUni(wc32.lpszMenuName));
                     }
@@ -2508,7 +2518,7 @@ namespace Win3muCore
         {
             // ID or HMENU?
             IntPtr idOrHMenu32;
-            if ((uFlags & Win32.MF_POPUP)!=0)
+            if ((uFlags & Win32.MF_POPUP) != 0)
             {
                 idOrHMenu32 = HMENU.Map.To32(idOrHMenu);
             }
@@ -2519,12 +2529,12 @@ namespace Win3muCore
 
             // String, bitmap or user data
             IntPtr dataBitmapOrString32;
-            if ((uFlags & Win32.MF_BITMAP)!=0)
+            if ((uFlags & Win32.MF_BITMAP) != 0)
             {
                 dataBitmapOrString32 = HGDIOBJ.To32(dataBitmapOrString.Loword()).value;
                 return ModifyMenu(hMenu, uPosition, uFlags, idOrHMenu32, dataBitmapOrString32);
             }
-            else if ((uFlags & Win32.MF_OWNERDRAW)!=0)
+            else if ((uFlags & Win32.MF_OWNERDRAW) != 0)
             {
                 dataBitmapOrString32 = BitUtils.DWordToIntPtr(dataBitmapOrString);
                 return ModifyMenu(hMenu, uPosition, uFlags, idOrHMenu32, dataBitmapOrString32);
@@ -2569,7 +2579,7 @@ namespace Win3muCore
             var parms = new object[paramCount];
             int parmIndex = 0;
 
-            for (int i=0; i<tokens.Count; i++)
+            for (int i = 0; i < tokens.Count; i++)
             {
                 if (tokens[i].literal != null)
                     continue;
@@ -2672,6 +2682,15 @@ namespace Win3muCore
         // 01BF - DEFMDICHILDPROC
         // 01C3 - TRANSLATEMDISYSACCEL
 
+        [EntryPoint(0x1BD)]
+        public ushort DefFrameProc(uint hwnd, uint hwndMDIClient, ushort uMSG, ushort wParam, ushort lParam)
+        {
+            var result = DefFrameProcA((IntPtr)hwnd, (IntPtr)hwndMDIClient, uMSG, (IntPtr)wParam, (IntPtr)lParam);
+            return HWND.Map.To16(result);
+        }
+        [DllImport("user32.dll")]
+        static extern IntPtr DefFrameProcA(IntPtr hWnd, IntPtr hWndMDIClient, uint uMsg, IntPtr wParam, IntPtr lParam);
+
         bool _didCallAdjustWindowRect;
         void AdjustWindowSize(uint style, uint styleEx, ref short width, ref short height)
         {
@@ -2769,13 +2788,13 @@ namespace Win3muCore
         public static extern void DrawFocusRect(HDC hdc, [In] ref Win32.RECT rc);
 
         // 01D6 - STRINGFUNC
-        
+
 
         [EntryPoint(0x01d7)]
         public nint lstrcmpi(string a, string b)
         {
             return string.Compare(a, b, true);
-        }                                     
+        }
 
         [EntryPoint(0x01d8)]
         public uint AnsiNext(uint psz)
@@ -2795,6 +2814,12 @@ namespace Win3muCore
         // 01E1 - HARDWARE_EVENT
         // 01E2 - ENABLESCROLLBAR
         // 01E3 - SYSTEMPARAMETERSINFO
+        [EntryPoint(0x1E3)]
+        public bool SystemParametersInfo(uint action, uint param, uint v, uint fWinIni)
+        {
+            //TODO
+            return false;
+        }
         // 01F3 - WNETERRORTEXT
         // 01F5 - WNETOPENJOB
         // 01F6 - WNETCLOSEJOB
@@ -2808,6 +2833,12 @@ namespace Win3muCore
         // 01FE - WNETLOCKQUEUEDATA
         // 01FF - WNETUNLOCKQUEUEDATA
         // 0200 - WNETGETCONNECTION
+        [EntryPoint(0x0200)]
+        public int WNETGETCONNECTION(string localName, string remoteName)
+        {
+            //TODO
+            return 0;
+        }
         // 0201 - WNETGETCAPS
         [EntryPoint(0x0201)]
         public ushort WNetGetCaps16(ushort capability)

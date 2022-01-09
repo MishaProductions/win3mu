@@ -40,7 +40,8 @@ namespace Win3muCore.MessageSemantics
 
         public static void ThrowMessageError(IntPtr hWnd32, uint message)
         {
-            throw new VirtualException($"Unknown windows message {MessageNames.NameOfMessage(message)} for window class '{User.GetClassName(hWnd32)}' ({WindowClassKind.Get(hWnd32)})");
+            Console.WriteLine($"Unknown windows message {MessageNames.NameOfMessage(message)} for window class '{User.GetClassName(hWnd32)}' ({WindowClassKind.Get(hWnd32)})");
+            //throw new VirtualException($"Unknown windows message {MessageNames.NameOfMessage(message)} for window class '{User.GetClassName(hWnd32)}' ({WindowClassKind.Get(hWnd32)})");
         }
 
         public Base LookupMessage32(IntPtr hWnd, uint message32, out ushort message16)

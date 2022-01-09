@@ -35,6 +35,10 @@ namespace Win3muCore
         {
             return (ushort)(dword & 0xFFFF);
         }
+        public static byte Lowbyte(this uint dword)
+        {
+            return (byte)(dword & 0xFFFFFF);
+        }
 
         public static ushort Hiword(this int dword)
         {

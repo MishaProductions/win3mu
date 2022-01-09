@@ -70,7 +70,7 @@ namespace Win3muCore
             _moduleManager.LoadModule(new Gdi());
             _moduleManager.LoadModule(new MMSystem());
             _moduleManager.LoadModule(new Keyboard());
-//            _moduleManager.LoadModule(new Shell());
+            //_moduleManager.LoadModule(new Shell());
             _moduleManager.LoadModule(new DdeML());
             _moduleManager.LoadModule(new Sound());
             //_moduleManager.LoadModule(new Win87em());
@@ -182,8 +182,8 @@ namespace Win3muCore
                 
         public int RunProgram(string programName, string[] commandArgs, int nCmdShow)
         {
-            try
-            {
+            //try
+            //{
                 var cl = new Utils.CommandLine(commandArgs);
 
                 // Store the program path
@@ -280,13 +280,13 @@ namespace Win3muCore
                 Log.Flush(); 
 
                 return _exitCode;
-            }
-            catch (Exception x)
-            {
-                Log.WriteLine(x.Message);      
-                Log.Flush();
-                throw;
-            }
+            //}
+            //catch (Exception x)
+            //{
+            //    Log.WriteLine(x.Message);      
+            //    Log.Flush();
+            //    throw;
+            //}
         }
 
         public Module16 ProcessModule
@@ -347,7 +347,7 @@ namespace Win3muCore
         public bool logApiCalls = false;
 
         [Json("logFileOperations")]
-        public bool logFileOperations = false;
+        public bool logFileOperations = true;
 
         [Json("logDispatchedMessages")]
         public bool logDispatchedMessages = false;
@@ -954,8 +954,7 @@ namespace Win3muCore
             this.PushWord(wParam);
             this.PushDWord(lParam);
 
-            if (NotifyCallWndProc16 != null)
-                NotifyCallWndProc16();
+            NotifyCallWndProc16?.Invoke();
 
             // Call the VM
             CallVM(lpfnProc, "WndProc");

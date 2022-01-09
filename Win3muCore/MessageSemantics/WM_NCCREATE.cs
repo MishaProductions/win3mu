@@ -42,7 +42,10 @@ namespace Win3muCore.MessageSemantics
 
             // Make sure no funny business going on
             // (ie: the same CREATESTRUCT is passed out from 16-bit code as was passed in)
-            System.Diagnostics.Debug.Assert(info.Struct32 != IntPtr.Zero);
+            if (info.Struct32 == IntPtr.Zero)
+            {
+                throw new Exception();
+            }
             System.Diagnostics.Debug.Assert(info.Struct16 != 0);
             System.Diagnostics.Debug.Assert(info.Struct16 == msg16.lParam);
 

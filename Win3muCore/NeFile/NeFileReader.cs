@@ -236,10 +236,10 @@ namespace Win3muCore.NeFile
             */
 
             // Check
-            if (_neHeader.targOS != TargetOS.Win)
-            {
-                throw new VirtualException(string.Format("Unsupported executable (TargetOS={0:X})", (ushort)_neHeader.targOS));
-            }
+            //if (_neHeader.targOS != TargetOS.Win)
+            //{
+            //    throw new VirtualException(string.Format("Unsupported executable (TargetOS={0:X})", (ushort)_neHeader.targOS));
+            //}
 
         }
 
