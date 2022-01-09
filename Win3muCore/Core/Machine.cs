@@ -316,7 +316,7 @@ namespace Win3muCore
         public Dictionary<string, PathMapper.Mount> mountPoints = new Dictionary<string, PathMapper.Mount>();
 
         [Json("enableDebugger")]
-        public bool enableDebugger;
+        public bool enableDebugger = true;
 
         [Json("breakOnLoad")]
         public bool breakOnLoad;
