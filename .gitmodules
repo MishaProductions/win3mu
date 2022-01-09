@@ -2,9 +2,5 @@
 	path = PetaJson
 	url = https://github.com/toptensoftware/PetaJson.git
 	branch = master
-[submodule "Sharp86"]
-	path = Sharp86
-	url = https://github.com/skochinsky/Sharp86.git
-	branch = brad_release
 
 	
