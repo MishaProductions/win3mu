@@ -44,7 +44,7 @@ namespace PetaJson
     public enum JsonOptions
     {
         None = 0,
-        WriteWhitespace  = 0x00000001,
+        WriteWhitespace = 0x00000001,
         DontWriteWhitespace = 0x00000002,
         StrictParser = 0x00000004,
         NonStrictParser = 0x00000008,
@@ -122,11 +122,11 @@ namespace PetaJson
                 {
                     bool savePreviousVersion = false;
 
-                    if ((options & JsonOptions.AutoSavePreviousVersion)!=0)
+                    if ((options & JsonOptions.AutoSavePreviousVersion) != 0)
                     {
                         savePreviousVersion = SavePreviousVersions;
                     }
-                    else if ((options & JsonOptions.SavePreviousVersion)!=0)
+                    else if ((options & JsonOptions.SavePreviousVersion) != 0)
                     {
                         savePreviousVersion = true;
                     }
@@ -217,9 +217,9 @@ namespace PetaJson
             }
             catch (Exception x)
             {
-				var loc = reader == null ? new JsonLineOffset() : reader.CurrentTokenPosition;
-				Console.WriteLine("Exception thrown while parsing JSON at {0}, context:{1}\n{2}", loc, reader.Context, x.ToString()); 
-				throw new JsonParseException(x, reader.Context, loc);
+                var loc = reader == null ? new JsonLineOffset() : reader.CurrentTokenPosition;
+                Console.WriteLine("Exception thrown while parsing JSON at {0}, context:{1}\n{2}", loc, reader.Context, x.ToString());
+                throw new JsonParseException(x, reader.Context, loc);
             }
         }
 
@@ -246,9 +246,9 @@ namespace PetaJson
             }
             catch (Exception x)
             {
-				var loc = reader == null ? new JsonLineOffset() : reader.CurrentTokenPosition;
-				Console.WriteLine("Exception thrown while parsing JSON at {0}, context:{1}\n{2}", loc, reader.Context, x.ToString()); 
-				throw new JsonParseException(x,reader.Context,loc);
+                var loc = reader == null ? new JsonLineOffset() : reader.CurrentTokenPosition;
+                Console.WriteLine("Exception thrown while parsing JSON at {0}, context:{1}\n{2}", loc, reader.Context, x.ToString());
+                throw new JsonParseException(x, reader.Context, loc);
             }
         }
 
@@ -442,11 +442,11 @@ namespace PetaJson
             Internal.Reader._intoParserResolver = resolver;
         }
 
-        public static bool WalkPath(this IDictionary<string, object> This, string Path, bool create, Func<IDictionary<string,object>,string, bool> leafCallback)
+        public static bool WalkPath(this IDictionary<string, object> This, string Path, bool create, Func<IDictionary<string, object>, string, bool> leafCallback)
         {
             // Walk the path
             var parts = Path.Split('.');
-            for (int i = 0; i < parts.Length-1; i++)
+            for (int i = 0; i < parts.Length - 1; i++)
             {
                 object val;
                 if (!This.TryGetValue(parts[i], out val))
@@ -457,11 +457,11 @@ namespace PetaJson
                     val = new Dictionary<string, object>();
                     This[parts[i]] = val;
                 }
-                This = (IDictionary<string,object>)val;
+                This = (IDictionary<string, object>)val;
             }
 
             // Process the leaf
-            return leafCallback(This, parts[parts.Length-1]);
+            return leafCallback(This, parts[parts.Length - 1]);
         }
 
         public static bool PathExists(this IDictionary<string, object> This, string Path)
@@ -490,7 +490,7 @@ namespace PetaJson
         }
 
         // Ensure there's an object of type T at specified path
-        public static T GetObjectAtPath<T>(this IDictionary<string, object> This, string Path) where T:class,new()
+        public static T GetObjectAtPath<T>(this IDictionary<string, object> This, string Path) where T : class, new()
         {
             T retVal = null;
             This.WalkPath(Path, true, (dict, key) =>
@@ -524,7 +524,7 @@ namespace PetaJson
         {
             JsonOptions resolved = JsonOptions.None;
 
-            if ((options & (JsonOptions.WriteWhitespace|JsonOptions.DontWriteWhitespace))!=0)
+            if ((options & (JsonOptions.WriteWhitespace | JsonOptions.DontWriteWhitespace)) != 0)
                 resolved |= options & (JsonOptions.WriteWhitespace | JsonOptions.DontWriteWhitespace);
             else
                 resolved |= WriteWhitespaceDefault ? JsonOptions.WriteWhitespace : JsonOptions.DontWriteWhitespace;
@@ -604,7 +604,7 @@ namespace PetaJson
     }
 
     // Passed to registered parsers
-    [Obfuscation(Exclude=true, ApplyToMembers=true)]
+    [Obfuscation(Exclude = true, ApplyToMembers = true)]
     public interface IJsonReader
     {
         object Parse(Type type);
@@ -638,7 +638,7 @@ namespace PetaJson
     // Exception thrown for any parse error
     public class JsonParseException : Exception
     {
-        public JsonParseException(Exception inner, string context, JsonLineOffset position) : 
+        public JsonParseException(Exception inner, string context, JsonLineOffset position) :
             base(string.Format("JSON parse error at {0}{1} - {2}", position, string.IsNullOrEmpty(context) ? "" : string.Format(", context {0}", context), inner.Message), inner)
         {
             Position = position;
@@ -725,32 +725,32 @@ namespace PetaJson
     }
 
 
-	// Apply to enum values to specify which enum value to select
-	// if the supplied json value doesn't match any.
-	// If not found throws an exception
-	// eg, any unknown values in the json will be mapped to Fruit.unknown
-	//
-	//	 [JsonUnknown(Fruit.unknown)]
-	//   enum Fruit
-	//   {
-	// 		unknown,
-	//      Apple,
-	//      Pear,
-	//	 }
-	[AttributeUsage(AttributeTargets.Enum)]
-	public class JsonUnknownAttribute : Attribute
-	{
-		public JsonUnknownAttribute(object unknownValue)
-		{
-			UnknownValue = unknownValue;
-		}
+    // Apply to enum values to specify which enum value to select
+    // if the supplied json value doesn't match any.
+    // If not found throws an exception
+    // eg, any unknown values in the json will be mapped to Fruit.unknown
+    //
+    //	 [JsonUnknown(Fruit.unknown)]
+    //   enum Fruit
+    //   {
+    // 		unknown,
+    //      Apple,
+    //      Pear,
+    //	 }
+    [AttributeUsage(AttributeTargets.Enum)]
+    public class JsonUnknownAttribute : Attribute
+    {
+        public JsonUnknownAttribute(object unknownValue)
+        {
+            UnknownValue = unknownValue;
+        }
 
-		public object UnknownValue
-		{
-			get;
-			private set;
-		}
-	}
+        public object UnknownValue
+        {
+            get;
+            private set;
+        }
+    }
 
     namespace Internal
     {
@@ -1019,7 +1019,8 @@ namespace PetaJson
                 if (type.IsEnum)
                 {
                     if (type.GetCustomAttributes(typeof(FlagsAttribute), false).Any())
-                        return ReadLiteral(literal => {
+                        return ReadLiteral(literal =>
+                        {
                             try
                             {
                                 return Enum.Parse(type, (string)literal);
@@ -1030,22 +1031,23 @@ namespace PetaJson
                             }
                         });
                     else
-						return ReadLiteral(literal => {
-							
-							try
-							{
-								return Enum.Parse(type, (string)literal);
-							}
-							catch (Exception)
-							{
-								var attr = type.GetCustomAttributes(typeof(JsonUnknownAttribute), false).FirstOrDefault();
-								if (attr==null)
-									throw;
+                        return ReadLiteral(literal =>
+                        {
 
-								return ((JsonUnknownAttribute)attr).UnknownValue;
-							}
+                            try
+                            {
+                                return Enum.Parse(type, (string)literal);
+                            }
+                            catch (Exception)
+                            {
+                                var attr = type.GetCustomAttributes(typeof(JsonUnknownAttribute), false).FirstOrDefault();
+                                if (attr == null)
+                                    throw;
 
-						});
+                                return ((JsonUnknownAttribute)attr).UnknownValue;
+                            }
+
+                        });
                 }
 
                 // Array?
@@ -1090,7 +1092,7 @@ namespace PetaJson
 
                     return container;
                 }
-               
+
                 // Untyped list?
                 if (_tokenizer.CurrentToken == Token.OpenSquare && (type.IsAssignableFrom(typeof(List<object>))))
                 {
@@ -1147,7 +1149,7 @@ namespace PetaJson
                 var type = into.GetType();
 
                 // Existing parse into handler?
-                Action<IJsonReader,object> parseInto;
+                Action<IJsonReader, object> parseInto;
                 if (_intoParsers.TryGetValue(type, out parseInto))
                 {
                     parseInto(this, into);
@@ -1156,7 +1158,7 @@ namespace PetaJson
 
                 // Generic dictionary?
                 var dictType = Utils.FindGenericInterface(type, typeof(IDictionary<,>));
-                if (dictType!=null)
+                if (dictType != null)
                 {
                     // Get the key and value types
                     var typeKey = dictType.GetGenericArguments()[0];
@@ -1175,7 +1177,7 @@ namespace PetaJson
 
                 // Generic list
                 var listType = Utils.FindGenericInterface(type, typeof(IList<>));
-                if (listType!=null)
+                if (listType != null)
                 {
                     // Get element type
                     var typeElement = listType.GetGenericArguments()[0];
@@ -1205,7 +1207,7 @@ namespace PetaJson
 
                 // Untyped list
                 var objList = into as IList;
-                if (objList!=null)
+                if (objList != null)
                 {
                     objList.Clear();
                     ParseArray(() =>
@@ -1231,19 +1233,19 @@ namespace PetaJson
                 return (T)Parse(typeof(T));
             }
 
-            public LiteralKind GetLiteralKind() 
-            { 
-                return _tokenizer.LiteralKind; 
-            }
-            
-            public string GetLiteralString() 
-            { 
-                return _tokenizer.String; 
+            public LiteralKind GetLiteralKind()
+            {
+                return _tokenizer.LiteralKind;
             }
 
-            public void NextToken() 
-            { 
-                _tokenizer.NextToken(); 
+            public string GetLiteralString()
+            {
+                return _tokenizer.String;
+            }
+
+            public void NextToken()
+            {
+                _tokenizer.NextToken();
             }
 
             // Parse a dictionary
@@ -1263,7 +1265,7 @@ namespace PetaJson
                 {
                     // Parse the key
                     string key = null;
-                    if (_tokenizer.CurrentToken == Token.Identifier && (_options & JsonOptions.StrictParser)==0)
+                    if (_tokenizer.CurrentToken == Token.Identifier && (_options & JsonOptions.StrictParser) == 0)
                     {
                         key = _tokenizer.String;
                     }
@@ -1284,7 +1286,7 @@ namespace PetaJson
                     // Call the callback, quit if cancelled
                     _contextStack.Add(key);
                     bool doDefaultProcessing = callback(key);
-                    _contextStack.RemoveAt(_contextStack.Count-1);
+                    _contextStack.RemoveAt(_contextStack.Count - 1);
                     if (!doDefaultProcessing)
                         return;
 
@@ -1319,11 +1321,11 @@ namespace PetaJson
                 {
                     _contextStack.Add(string.Format("[{0}]", index));
                     callback();
-                    _contextStack.RemoveAt(_contextStack.Count-1);
+                    _contextStack.RemoveAt(_contextStack.Count - 1);
 
                     if (_tokenizer.SkipIf(Token.Comma))
                     {
-                        if ((_options & JsonOptions.StrictParser)!=0 && _tokenizer.CurrentToken==Token.CloseSquare)
+                        if ((_options & JsonOptions.StrictParser) != 0 && _tokenizer.CurrentToken == Token.CloseSquare)
                         {
                             throw new InvalidDataException("Trailing commas not allowed in strict mode");
                         }
@@ -1383,7 +1385,7 @@ namespace PetaJson
                 var formatJson = ReflectionInfo.FindFormatJson(type);
                 if (formatJson != null)
                 {
-                    if (formatJson.ReturnType==typeof(void))
+                    if (formatJson.ReturnType == typeof(void))
                         return (w, obj) => formatJson.Invoke(obj, new Object[] { w });
                     if (formatJson.ReturnType == typeof(string))
                         return (w, obj) => w.WriteStringLiteral((string)formatJson.Invoke(obj, new Object[] { }));
@@ -1417,7 +1419,7 @@ namespace PetaJson
                 if (_atStartOfLine)
                     return;
 
-                if ((_options & JsonOptions.WriteWhitespace)!=0)
+                if ((_options & JsonOptions.WriteWhitespace) != 0)
                 {
                     WriteRaw("\n");
                     WriteRaw(new string('\t', IndentLevel));
@@ -1487,7 +1489,7 @@ namespace PetaJson
                 while (pos < length)
                 {
                     var ch = str[pos];
-                    if (ch == '\\' || ch == '/' || ch == '\"' || (ch>=0 && ch <= 0x1f) || (ch >= 0x7f && ch <=0x9f) || ch==0x2028 || ch== 0x2029)
+                    if (ch == '\\' || ch == '/' || ch == '\"' || (ch >= 0 && ch <= 0x1f) || (ch >= 0x7f && ch <= 0x9f) || ch == 0x2028 || ch == 0x2029)
                         return pos;
                     pos++;
                 }
@@ -1516,7 +1518,7 @@ namespace PetaJson
                     {
                         case '\"': _writer.Write("\\\""); break;
                         case '\\': _writer.Write("\\\\"); break;
-                        case '/':  _writer.Write("\\/"); break;
+                        case '/': _writer.Write("\\/"); break;
                         case '\b': _writer.Write("\\b"); break;
                         case '\f': _writer.Write("\\f"); break;
                         case '\n': _writer.Write("\\n"); break;
@@ -1628,7 +1630,7 @@ namespace PetaJson
                 }
 
                 // Dictionary?
-                var dso = value as IDictionary<string,object>;
+                var dso = value as IDictionary<string, object>;
                 if (dso != null)
                 {
                     WriteDictionary(() =>
@@ -1683,7 +1685,7 @@ namespace PetaJson
             // True if deprecated
             public bool Deprecated;
 
-            
+
 
             // Reflected member info
             MemberInfo _mi;
@@ -1780,7 +1782,7 @@ namespace PetaJson
                     if (writing != null)
                         writing.OnJsonWriting(w);
 
-                    foreach (var jmi in Members.Where(x=>!x.Deprecated))
+                    foreach (var jmi in Members.Where(x => !x.Deprecated))
                     {
                         w.WriteKeyNoEscaping(jmi.JsonKey);
                         w.WriteValue(jmi.GetValue(val));
@@ -1871,7 +1873,7 @@ namespace PetaJson
                 // Check cache
                 return _cache.Get(type, () =>
                 {
-                    var allMembers = Utils.GetAllFieldsAndProperties(type); 
+                    var allMembers = Utils.GetAllFieldsAndProperties(type);
 
                     // Does type have a [Json] attribute
                     bool typeMarked = type.GetCustomAttributes(typeof(JsonAttribute), true).OfType<JsonAttribute>().Any();
@@ -1951,7 +1953,7 @@ namespace PetaJson
 
                 // Anything with KeepInstance must be a reference type
                 var invalid = members.FirstOrDefault(x => x.KeepInstance && x.MemberType.IsValueType);
-                if (invalid!=null)
+                if (invalid != null)
                 {
                     throw new InvalidOperationException(string.Format("KeepInstance=true can only be applied to reference types ({0}.{1})", type.FullName, invalid.Member));
                 }
@@ -1995,8 +1997,8 @@ namespace PetaJson
                     TValue val;
                     if (!_map.TryGetValue(key, out val))
                     {
-						// Store the new one
-						val = createIt();
+                        // Store the new one
+                        val = createIt();
                         _map[key] = val;
                     }
                     return val;
@@ -2033,7 +2035,7 @@ namespace PetaJson
                 }
             }
 
-            Dictionary<TKey, TValue> _map = new Dictionary<TKey,TValue>();
+            Dictionary<TKey, TValue> _map = new Dictionary<TKey, TValue>();
             ReaderWriterLockSlim _lock = new ReaderWriterLockSlim();
         }
 
@@ -2344,7 +2346,7 @@ namespace PetaJson
                         else
                             break;
                     }
-                    
+
                     // Remember position of token
                     CurrentTokenPosition = _currentCharPos;
 
@@ -2364,7 +2366,7 @@ namespace PetaJson
                             {
                                 case '/':
                                     NextChar();
-                                    while (_currentChar!='\0' && _currentChar != '\r' && _currentChar != '\n')
+                                    while (_currentChar != '\0' && _currentChar != '\r' && _currentChar != '\n')
                                     {
                                         NextChar();
                                     }
@@ -2372,7 +2374,7 @@ namespace PetaJson
 
                                 case '*':
                                     bool endFound = false;
-                                    while (!endFound && _currentChar!='\0')
+                                    while (!endFound && _currentChar != '\0')
                                     {
                                         if (_currentChar == '*')
                                         {
@@ -2393,66 +2395,66 @@ namespace PetaJson
 
                         case '\"':
                         case '\'':
-                        {
-                            _sb.Length = 0;
-                            var quoteKind = _currentChar;
-                            NextChar();
-                            while (_currentChar!='\0')
                             {
-                                if (_currentChar == '\\')
-                                {
-                                    NextChar();
-                                    var escape = _currentChar;
-                                    switch (escape)
-                                    {
-                                        case '\"': _sb.Append('\"'); break;
-                                        case '\\': _sb.Append('\\'); break;
-                                        case '/': _sb.Append('/'); break;
-                                        case 'b': _sb.Append('\b'); break;
-                                        case 'f': _sb.Append('\f'); break;
-                                        case 'n': _sb.Append('\n'); break;
-                                        case 'r': _sb.Append('\r'); break;
-                                        case 't': _sb.Append('\t'); break;
-                                        case 'u':
-                                            var sbHex = new StringBuilder();
-                                            for (int i = 0; i < 4; i++)
-                                            {
-                                                NextChar();
-                                                sbHex.Append(_currentChar);
-                                            }
-                                            _sb.Append((char)Convert.ToUInt16(sbHex.ToString(), 16));
-                                            break;
-
-                                        default:
-                                            throw new InvalidDataException(string.Format("Invalid escape sequence in string literal: '\\{0}'", _currentChar));
-                                    }
-                                }
-                                else if (_currentChar == quoteKind)
-                                {
-                                    String = _sb.ToString();
-                                    CurrentToken = Token.Literal;
-                                    LiteralKind = LiteralKind.String;
-                                    NextChar();
-                                    return;
-                                }
-                                else
-                                {
-                                    _sb.Append(_currentChar);
-                                }
-
+                                _sb.Length = 0;
+                                var quoteKind = _currentChar;
                                 NextChar();
-                            }
-                            throw new InvalidDataException("syntax error, unterminated string literal");
-                        }
+                                while (_currentChar != '\0')
+                                {
+                                    if (_currentChar == '\\')
+                                    {
+                                        NextChar();
+                                        var escape = _currentChar;
+                                        switch (escape)
+                                        {
+                                            case '\"': _sb.Append('\"'); break;
+                                            case '\\': _sb.Append('\\'); break;
+                                            case '/': _sb.Append('/'); break;
+                                            case 'b': _sb.Append('\b'); break;
+                                            case 'f': _sb.Append('\f'); break;
+                                            case 'n': _sb.Append('\n'); break;
+                                            case 'r': _sb.Append('\r'); break;
+                                            case 't': _sb.Append('\t'); break;
+                                            case 'u':
+                                                var sbHex = new StringBuilder();
+                                                for (int i = 0; i < 4; i++)
+                                                {
+                                                    NextChar();
+                                                    sbHex.Append(_currentChar);
+                                                }
+                                                _sb.Append((char)Convert.ToUInt16(sbHex.ToString(), 16));
+                                                break;
 
-                        case '{': CurrentToken =  Token.OpenBrace; NextChar(); return;
-                        case '}': CurrentToken =  Token.CloseBrace; NextChar(); return;
-                        case '[': CurrentToken =  Token.OpenSquare; NextChar(); return;
-                        case ']': CurrentToken =  Token.CloseSquare; NextChar(); return;
-                        case '=': CurrentToken =  Token.Equal; NextChar(); return;
-                        case ':': CurrentToken =  Token.Colon; NextChar(); return;
-                        case ';': CurrentToken =  Token.SemiColon; NextChar(); return;
-                        case ',': CurrentToken =  Token.Comma; NextChar(); return;
+                                            default:
+                                                throw new InvalidDataException(string.Format("Invalid escape sequence in string literal: '\\{0}'", _currentChar));
+                                        }
+                                    }
+                                    else if (_currentChar == quoteKind)
+                                    {
+                                        String = _sb.ToString();
+                                        CurrentToken = Token.Literal;
+                                        LiteralKind = LiteralKind.String;
+                                        NextChar();
+                                        return;
+                                    }
+                                    else
+                                    {
+                                        _sb.Append(_currentChar);
+                                    }
+
+                                    NextChar();
+                                }
+                                throw new InvalidDataException("syntax error, unterminated string literal");
+                            }
+
+                        case '{': CurrentToken = Token.OpenBrace; NextChar(); return;
+                        case '}': CurrentToken = Token.CloseBrace; NextChar(); return;
+                        case '[': CurrentToken = Token.OpenSquare; NextChar(); return;
+                        case ']': CurrentToken = Token.CloseSquare; NextChar(); return;
+                        case '=': CurrentToken = Token.Equal; NextChar(); return;
+                        case ':': CurrentToken = Token.Colon; NextChar(); return;
+                        case ';': CurrentToken = Token.SemiColon; NextChar(); return;
+                        case ',': CurrentToken = Token.Comma; NextChar(); return;
                         case '\0': CurrentToken = Token.EOF; return;
                     }
 
@@ -2480,21 +2482,21 @@ namespace PetaJson
                         {
                             case "true":
                                 LiteralKind = LiteralKind.True;
-                                CurrentToken =  Token.Literal;
+                                CurrentToken = Token.Literal;
                                 return;
 
                             case "false":
                                 LiteralKind = LiteralKind.False;
-                                CurrentToken =  Token.Literal;
+                                CurrentToken = Token.Literal;
                                 return;
 
                             case "null":
                                 LiteralKind = LiteralKind.Null;
-                                CurrentToken =  Token.Literal;
+                                CurrentToken = Token.Literal;
                                 return;
                         }
 
-                        CurrentToken =  Token.Identifier;
+                        CurrentToken = Token.Identifier;
                         return;
                     }
 
@@ -2521,7 +2523,7 @@ namespace PetaJson
 
                 // Hex prefix?
                 bool hex = false;
-                if (_currentChar == '0' && (_options & JsonOptions.StrictParser)==0)
+                if (_currentChar == '0' && (_options & JsonOptions.StrictParser) == 0)
                 {
                     _sb.Append(_currentChar);
                     NextChar();
@@ -2672,7 +2674,7 @@ namespace PetaJson
                     if (formatJson.ReturnType == typeof(string))
                     {
                         // w.WriteStringLiteral(o.FormatJson())
-                        il.Emit(OpCodes.Ldarg_0); 
+                        il.Emit(OpCodes.Ldarg_0);
                         il.Emit(OpCodes.Ldarg_1);
                         il.Emit(OpCodes.Unbox, type);
                         il.Emit(OpCodes.Call, formatJson);
@@ -2712,9 +2714,9 @@ namespace PetaJson
                     il.Emit(OpCodes.Stloc, locInvariant);
 
                     // These are the types we'll call .ToString(Culture.InvariantCulture) on
-                    var toStringTypes = new Type[] { 
-                    typeof(int), typeof(uint), typeof(long), typeof(ulong), 
-                    typeof(short), typeof(ushort), typeof(decimal), 
+                    var toStringTypes = new Type[] {
+                    typeof(int), typeof(uint), typeof(long), typeof(ulong),
+                    typeof(short), typeof(ushort), typeof(decimal),
                     typeof(byte), typeof(sbyte)
                 };
 
@@ -2983,7 +2985,7 @@ namespace PetaJson
                         il.Emit(OpCodes.Call, parseJson);
                         il.Emit(OpCodes.Box, type);
                         il.Emit(OpCodes.Ret);
-                        return (Func<IJsonReader,Type,object>)method.CreateDelegate(typeof(Func<IJsonReader,Type,object>));
+                        return (Func<IJsonReader, Type, object>)method.CreateDelegate(typeof(Func<IJsonReader, Type, object>));
                     }
                     else
                     {
@@ -3331,10 +3333,10 @@ namespace PetaJson
                     il.Emit(OpCodes.Callvirt, typeof(IJsonReader).GetMethod("NextToken", new Type[] { }));
                 };
 
-                Type[] numericTypes = new Type[] { 
-                    typeof(int), typeof(uint), typeof(long), typeof(ulong), 
-                    typeof(short), typeof(ushort), typeof(decimal), 
-                    typeof(byte), typeof(sbyte), 
+                Type[] numericTypes = new Type[] {
+                    typeof(int), typeof(uint), typeof(long), typeof(ulong),
+                    typeof(short), typeof(ushort), typeof(decimal),
+                    typeof(byte), typeof(sbyte),
                     typeof(double), typeof(float)
                 };
 

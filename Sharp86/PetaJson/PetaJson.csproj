@@ -6,8 +6,11 @@
     <TargetFramework>net6.0-windows</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="petatest\**" />
     <Compile Remove="TestCases\**" />
+    <EmbeddedResource Remove="petatest\**" />
     <EmbeddedResource Remove="TestCases\**" />
+    <None Remove="petatest\**" />
     <None Remove="TestCases\**" />
   </ItemGroup>
 </Project>

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27004.2002
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32014.148
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sharp86", "Sharp86\Sharp86.csproj", "{B7B582A0-CED8-497B-A9B8-EF152326C713}"
 EndProject
@@ -14,19 +14,19 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		TraceAndTestImpact.testsettings = TraceAndTestImpact.testsettings
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConDos", "ConDos\ConDos.csproj", "{D1D82BB6-4291-4D44-B196-31757CF41506}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConDos", "ConDos\ConDos.csproj", "{D1D82BB6-4291-4D44-B196-31757CF41506}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sharp86TextGuiDebugger", "Sharp86TextGuiDebugger\Sharp86TextGuiDebugger.csproj", "{460777C5-52D2-4680-945C-037026022C02}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sharp86TextGuiDebugger", "Sharp86TextGuiDebugger\Sharp86TextGuiDebugger.csproj", "{460777C5-52D2-4680-945C-037026022C02}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sharp86AluTests", "Sharp86AluTests\Sharp86AluTests.csproj", "{4FCF88A9-301B-4763-BF9D-E63A3783249E}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "x86flags", "x86flags\x86flags.vcxproj", "{F594BEAA-C56B-46DB-9376-043E35EC957B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sharp86DebuggerCore", "Sharp86DebuggerCore\Sharp86DebuggerCore.csproj", "{5DD0E722-C0F7-46C4-8FC4-13F56D881A75}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sharp86DebuggerCore", "Sharp86DebuggerCore\Sharp86DebuggerCore.csproj", "{5DD0E722-C0F7-46C4-8FC4-13F56D881A75}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PetaJson_Net40", "PetaJson\PetaJson_Net40.csproj", "{32C1E6D1-46BA-4C3A-83BF-290E1C5D4690}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConFrames", "ConFrames\ConFrames\ConFrames.csproj", "{64905DDF-9D01-4A63-BD60-A2586008CEE2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConFrames", "ConFrames\ConFrames\ConFrames.csproj", "{64905DDF-9D01-4A63-BD60-A2586008CEE2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PetaJson", "PetaJson\PetaJson.csproj", "{0EC4790E-382D-43EB-8937-774B34709B0F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -120,18 +120,6 @@ Global
 		{5DD0E722-C0F7-46C4-8FC4-13F56D881A75}.Release|x64.Build.0 = Release|Any CPU
 		{5DD0E722-C0F7-46C4-8FC4-13F56D881A75}.Release|x86.ActiveCfg = Release|Any CPU
 		{5DD0E722-C0F7-46C4-8FC4-13F56D881A75}.Release|x86.Build.0 = Release|Any CPU
-		{32C1E6D1-46BA-4C3A-83BF-290E1C5D4690}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{32C1E6D1-46BA-4C3A-83BF-290E1C5D4690}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{32C1E6D1-46BA-4C3A-83BF-290E1C5D4690}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{32C1E6D1-46BA-4C3A-83BF-290E1C5D4690}.Debug|x64.Build.0 = Debug|Any CPU
-		{32C1E6D1-46BA-4C3A-83BF-290E1C5D4690}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{32C1E6D1-46BA-4C3A-83BF-290E1C5D4690}.Debug|x86.Build.0 = Debug|Any CPU
-		{32C1E6D1-46BA-4C3A-83BF-290E1C5D4690}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{32C1E6D1-46BA-4C3A-83BF-290E1C5D4690}.Release|Any CPU.Build.0 = Release|Any CPU
-		{32C1E6D1-46BA-4C3A-83BF-290E1C5D4690}.Release|x64.ActiveCfg = Release|Any CPU
-		{32C1E6D1-46BA-4C3A-83BF-290E1C5D4690}.Release|x64.Build.0 = Release|Any CPU
-		{32C1E6D1-46BA-4C3A-83BF-290E1C5D4690}.Release|x86.ActiveCfg = Release|Any CPU
-		{32C1E6D1-46BA-4C3A-83BF-290E1C5D4690}.Release|x86.Build.0 = Release|Any CPU
 		{64905DDF-9D01-4A63-BD60-A2586008CEE2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{64905DDF-9D01-4A63-BD60-A2586008CEE2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{64905DDF-9D01-4A63-BD60-A2586008CEE2}.Debug|x64.ActiveCfg = Debug|Any CPU
@@ -144,6 +132,18 @@ Global
 		{64905DDF-9D01-4A63-BD60-A2586008CEE2}.Release|x64.Build.0 = Release|Any CPU
 		{64905DDF-9D01-4A63-BD60-A2586008CEE2}.Release|x86.ActiveCfg = Release|Any CPU
 		{64905DDF-9D01-4A63-BD60-A2586008CEE2}.Release|x86.Build.0 = Release|Any CPU
+		{0EC4790E-382D-43EB-8937-774B34709B0F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0EC4790E-382D-43EB-8937-774B34709B0F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0EC4790E-382D-43EB-8937-774B34709B0F}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{0EC4790E-382D-43EB-8937-774B34709B0F}.Debug|x64.Build.0 = Debug|Any CPU
+		{0EC4790E-382D-43EB-8937-774B34709B0F}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{0EC4790E-382D-43EB-8937-774B34709B0F}.Debug|x86.Build.0 = Debug|Any CPU
+		{0EC4790E-382D-43EB-8937-774B34709B0F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0EC4790E-382D-43EB-8937-774B34709B0F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0EC4790E-382D-43EB-8937-774B34709B0F}.Release|x64.ActiveCfg = Release|Any CPU
+		{0EC4790E-382D-43EB-8937-774B34709B0F}.Release|x64.Build.0 = Release|Any CPU
+		{0EC4790E-382D-43EB-8937-774B34709B0F}.Release|x86.ActiveCfg = Release|Any CPU
+		{0EC4790E-382D-43EB-8937-774B34709B0F}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

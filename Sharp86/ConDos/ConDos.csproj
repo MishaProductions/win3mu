@@ -5,4 +5,8 @@
     <AssemblyName>ConDos</AssemblyName>
     <TargetFramework>net6.0-windows</TargetFramework>
   </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Sharp86TextGuiDebugger\Sharp86TextGuiDebugger.csproj" />
+    <ProjectReference Include="..\Sharp86\Sharp86.csproj" />
+  </ItemGroup>
 </Project>
